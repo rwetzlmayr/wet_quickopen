@@ -1,0 +1,13 @@
+h3. Open recent (and not so recent) articles quickly
+
+*wet_quickopen* is a plugin for Textpattern which prepends a search term input on top of the "Recent Articles" list at the article edit screen. The "Recent Articles" list is filtered by matching the current search term against all articles' titles and bodies.
+
+h4. usage:
+
+# Textpattern 4.5+ is required.
+# Install both @wet_quickopen@ and @wet_peex@ as a Textpattern plugin.
+# Done. If all went well, the *Content > Write"* will be adorned by a new input box atop of the "Recent Articles" list.
+
+h4. Licence and Disclaimer
+
+This plug-in is released under the "Gnu General Public Licence":http://www.gnu.org/licenses/gpl.txt.

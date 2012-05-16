@@ -22,7 +22,7 @@ h4. usage:
 
 # Textpattern 4.5+ is required.
 # Install both @wet_quickopen@ and @wet_peex@ as a Textpattern plugin.
-# Done. If all went well, the "content > write":./?event=article screen will be adorned by a new input box atop of the "Recent Articles" list.
+# Done. If all went well, the "Content > Write":./?event=article screen will be adorned by a new input box atop of the "Recent Articles" list.
 
 h4. Licence and Disclaimer
 
