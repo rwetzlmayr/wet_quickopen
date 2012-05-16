@@ -26,7 +26,7 @@ h4. usage:
 
 h4. Licence and Disclaimer
 
-This plug-in is released under the "Gnu General Public Licence":http://www.gnu.org/licenses/gpl.txt.
+This plug-in is released under the Gnu General Public Licence.
 
 # --- END PLUGIN HELP ---
 
