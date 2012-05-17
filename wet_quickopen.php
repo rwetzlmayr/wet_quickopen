@@ -1,7 +1,7 @@
 <?php
 /* $LastChangedRevision: 147 $ */
 
-$plugin['version'] = '0.5';
+$plugin['version'] = '0.5.1';
 $plugin['author'] = 'Robert Wetzlmayr';
 $plugin['author_uri'] = 'http://awasteofwords.com/software/wet_quickopen-textpattern-plugin';
 $plugin['description'] = 'Open recent (and not so recent) articles quickly';
@@ -70,7 +70,7 @@ function wet_quickopen_clutch($event, $step)
  */
 function wet_quickopen_js()
 {
-	$debug = true;
+	$debug = false;
 	while(@ob_end_clean());
 	header("Content-Type: text/javascript; charset=utf-8");
 	header("Expires: ".date("r", time() + ($debug ? -3600 : 3600)));
