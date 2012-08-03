@@ -1,7 +1,7 @@
 <?php
 /* $LastChangedRevision: 147 $ */
 
-$plugin['version'] = '0.5.1';
+$plugin['version'] = '0.5.2';
 $plugin['author'] = 'Robert Wetzlmayr';
 $plugin['author_uri'] = 'http://awasteofwords.com/software/wet_quickopen-textpattern-plugin';
 $plugin['description'] = 'Open recent (and not so recent) articles quickly';
@@ -35,8 +35,7 @@ This plug-in is released under the Gnu General Public Licence.
 
 # --- BEGIN PLUGIN CODE ---
 
-global $event;
-if ($event == 'article') register_callback('wet_quickopen_form', 'article_ui', 'recent_articles');
+register_callback('wet_quickopen_form', 'article_ui', 'recent_articles');
 register_callback('wet_quickopen_clutch', 'article');
 
 // serve assorted resources
