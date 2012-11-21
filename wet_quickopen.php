@@ -1,7 +1,7 @@
 <?php
 /* $LastChangedRevision: 147 $ */
 
-$plugin['version'] = '0.5.2';
+$plugin['version'] = '0.5.3';
 $plugin['author'] = 'Robert Wetzlmayr';
 $plugin['author_uri'] = 'http://awasteofwords.com/software/wet_quickopen-textpattern-plugin';
 $plugin['description'] = 'Open recent (and not so recent) articles quickly';
@@ -35,9 +35,6 @@ This plug-in is released under the Gnu General Public Licence.
 
 # --- BEGIN PLUGIN CODE ---
 
-register_callback('wet_quickopen_form', 'article_ui', 'recent_articles');
-register_callback('wet_quickopen_clutch', 'article');
-
 // serve assorted resources
 switch(gps('wet_rsrc')) {
 	case 'quickopen_js':
@@ -47,46 +44,38 @@ switch(gps('wet_rsrc')) {
 		break;
 }
 
-/**
- * Insert a search box at the top of "Recent Articles".
- */
-function wet_quickopen_form($event, $step, $default)
-{
-	return n.'<input class="edit" type="text" id="wet_quickopen_search" />'.n.$default;
+global $app_mode;
+if ($app_mode != 'async') {
+	/**
+	 * Insert a search box at the top of "Recent Articles".
+	 */
+	register_callback('wet_quickopen_form', 'article_ui', 'recent_articles');
+	function wet_quickopen_form($event, $step, $default)
+	{
+		return n.fInput('text', 'wet_quickopen_search', '', 'edit', '', '', INPUT_REGULAR, 0, 'wet_quickopen_search')/*.'<input size="INPUT_REGULAR" class="edit" type="text" id="wet_quickopen_search" />'*/.n.$default;
+	}
+
+	/**
+	 * Pull in the JS worker file near the end of the page
+	 */
+	register_callback('wet_quickopen_clutch', 'article');
+	function wet_quickopen_clutch($event, $step)
+	{
+		echo '<script src="?wet_rsrc=quickopen_js" type="text/javascript"></script>'.n;
+		require_plugin('wet_peex'); // won't help for loading wet_peex on time, but point out the lack of it to unwary users.
+	}
 }
 
 /**
- * Pull in the JS worker file near the end of the page
- */
-function wet_quickopen_clutch($event, $step)
-{
-	echo '<script src="?wet_rsrc=quickopen_js" type="text/javascript"></script>'.n;
-	require_plugin('wet_peex'); // won't help for loading wet_peex on time, but point out the lack of it to unwary users.
-}
-
-/**
- * Serve JS resource, as either an embedded resource or from a file while in development
+ * Serve embedded JS resource
  */
 function wet_quickopen_js()
 {
-	$debug = false;
 	while(@ob_end_clean());
 	header("Content-Type: text/javascript; charset=utf-8");
-	header("Expires: ".date("r", time() + ($debug ? -3600 : 3600)));
+	header("Expires: ".date("r", time() + 3600));
 	header("Cache-Control: public");
-	if ($debug) {
-		readfile( dirname(__FILE__). '/wet_quickopen_js.js');
-	} else {
-		echo <<<JS
-/*=*=*=* script goes here */
-/**
- * wet_quickopen: Open recent (and not so recent) articles quickly.
- *
- * @author Robert Wetzlmayr
- * @link http://awasteofwords.com/software/wet_quickopen-textpattern-plugin
- * @version 0.5
- */
-
+	echo <<<JS
 var wet_quickopen = {
  	rows: 10,
 	sortdir: 'desc',
@@ -96,36 +85,34 @@ var wet_quickopen = {
 	// the worker function refreshes the list of matching articles and inserts the result into the "recent articles" list
 	refresh: function() {
 		var box = $('ul.recent');
-		$.ajax( {
-		 		url: '',
-		 		data: {
-                    'wet_peex': 'article',
-                    'limit': wet_quickopen.rows.toString(),
-                    'offset': '0',
-                    'dir': wet_quickopen.sortdir,
-                    'sort': wet_quickopen.crit,
-                    'search': wet_quickopen.search
-				},
-                dataType: 'xml',
-				success: function(xml){
-		    		// paint the article list
-		    		var list = "";
-					// parse the XML response
-					$("article", xml).each(function(i) {
-                        // paint one article row
-                        list += "<li class='recent-article'>" +
-                                "<a href='?event=article&amp;step=edit&amp;ID="+wet_quickopen.htmlspecialchars($('id', this).text())+"'>"+
-                                wet_quickopen.htmlspecialchars($('title', this).text())+
-                                "</a>" +
-                                "</li>";
-					});
-					// inject list into "Recent Articles"
-		    		box.html(list);
-		 		},
-		 		error: function(XMLHttpRequest, textStatus, errorThrown){
-                     box.html('<strong>wet_quickopen: ' + textStatus + '</strong>');
-                 }
-		} );
+		$.ajax({
+			url: '',
+			data: {
+				'wet_peex': 'article',
+				'limit': wet_quickopen.rows.toString(),
+				'offset': '0',
+				'dir': wet_quickopen.sortdir,
+				'sort': wet_quickopen.crit,
+				'search': wet_quickopen.search
+			},
+			dataType: 'xml',
+			success: function(xml) {
+				// paint the article list
+				var list = [];
+				// parse the XML response
+				$('article', xml).each(function(i) {
+					var li = $('<li class="recent-article" />');
+					var href = '?event=article&step=edit&ID=' + $('id', this).text();
+					var title = wet_quickopen.htmlspecialchars($('title', this).text());
+					list.push(li.append($('<a />').attr('href', href).html(title)));
+				});
+				// inject list into "Recent Articles"
+				box.html(list);
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				 box.html('<strong>wet_quickopen: ' + textStatus + '</strong>');
+			}
+		});
 		return;
 	},
 
@@ -161,9 +148,7 @@ var wet_quickopen = {
 };
 
 $(document).ready( function(){wet_quickopen.behaviours();} );
-/*=*=*=* script ends here */
 JS;
-	}
 	exit();
 }
 
