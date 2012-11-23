@@ -1,0 +1,54 @@
+# wet_quickopen v1.0
+# Open recent (and not so recent) articles quickly
+# Robert Wetzlmayr
+# http://awasteofwords.com/software/wet_quickopen-textpattern-plugin
+
+# ......................................................................
+# This is a plugin for Textpattern - http://textpattern.com/
+# To install: textpattern > admin > plugins
+# Paste the following text into the 'Install plugin' box:
+# ......................................................................
+
+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
+6KHlgccVAAA=

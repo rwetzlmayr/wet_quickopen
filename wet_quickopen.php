@@ -1,7 +1,7 @@
 <?php
 /* $LastChangedRevision: 147 $ */
 
-$plugin['version'] = '0.5.3';
+$plugin['version'] = '1.0';
 $plugin['author'] = 'Robert Wetzlmayr';
 $plugin['author_uri'] = 'http://awasteofwords.com/software/wet_quickopen-textpattern-plugin';
 $plugin['description'] = 'Open recent (and not so recent) articles quickly';
@@ -58,11 +58,20 @@ if ($app_mode != 'async') {
 	/**
 	 * Pull in the JS worker file near the end of the page
 	 */
-	register_callback('wet_quickopen_clutch', 'article');
-	function wet_quickopen_clutch($event, $step)
+	register_callback('wet_quickopen_jslink', 'article');
+	function wet_quickopen_jslink($event, $step)
 	{
 		echo '<script src="?wet_rsrc=quickopen_js" type="text/javascript"></script>'.n;
 		require_plugin('wet_peex'); // won't help for loading wet_peex on time, but point out the lack of it to unwary users.
+	}
+
+	/**
+	 * Pull in additional styles at the end of the HEAD
+	 */
+	register_callback('wet_quickopen_style', 'admin_side', 'head_end');
+	function wet_quickopen_style($event, $step)
+	{
+		echo n.'<style type="text/css">div#recent{padding-top:1em;}</style>'.n;
 	}
 }
 
@@ -75,9 +84,16 @@ function wet_quickopen_js()
 	header("Content-Type: text/javascript; charset=utf-8");
 	header("Expires: ".date("r", time() + 3600));
 	header("Cache-Control: public");
+	$rows = (defined('WRITE_RECENT_ARTICLES_COUNT') ? WRITE_RECENT_ARTICLES_COUNT : 10);
 	echo <<<JS
+/**
+ * wet_quickopen: Open recent (and not so recent) articles quickly
+ *
+ * @author Robert Wetzlmayr
+ * @link http://awasteofwords.com/software/wet_quickopen-textpattern-plugin
+ */
 var wet_quickopen = {
- 	rows: 10,
+	rows: {$rows},
 	sortdir: 'desc',
 	crit: 'lastmod',
 	search: '',
