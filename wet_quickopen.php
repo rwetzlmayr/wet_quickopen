@@ -1,7 +1,7 @@
 <?php
 /* $LastChangedRevision: 147 $ */
 
-$plugin['version'] = '1.0';
+$plugin['version'] = '1.1';
 $plugin['author'] = 'Robert Wetzlmayr';
 $plugin['author_uri'] = 'http://awasteofwords.com/software/wet_quickopen-textpattern-plugin';
 $plugin['description'] = 'Open recent (and not so recent) articles quickly';
@@ -114,16 +114,22 @@ var wet_quickopen = {
 			dataType: 'xml',
 			success: function(xml) {
 				// paint the article list
-				var list = [];
+				var list = $('<ul/>');
 				// parse the XML response
 				$('article', xml).each(function(i) {
-					var li = $('<li class="recent-article" />');
+					var li = $('<li class="recent-article"/>');
 					var href = '?event=article&step=edit&ID=' + $('id', this).text();
 					var title = wet_quickopen.htmlspecialchars($('title', this).text());
-					list.push(li.append($('<a />').attr('href', href).html(title)));
+					list.append(
+						$('<dummy/>').append(  // jQuerish outerHTML()
+							li.append(
+								$('<a />').attr('href', href).html(title)
+							)
+						).html()
+					);
 				});
 				// inject list into "Recent Articles"
-				box.html(list);
+				box.html(list.html());
 			},
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
 				 box.html('<strong>wet_quickopen: ' + textStatus + '</strong>');
