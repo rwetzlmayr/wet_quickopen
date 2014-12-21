@@ -1,7 +1,6 @@
 <?php
-/* $LastChangedRevision: 147 $ */
 
-$plugin['version'] = '1.1';
+$plugin['version'] = '1.3';
 $plugin['author'] = 'Robert Wetzlmayr';
 $plugin['author_uri'] = 'http://awasteofwords.com/software/wet_quickopen-textpattern-plugin';
 $plugin['description'] = 'Open recent (and not so recent) articles quickly';
@@ -36,7 +35,7 @@ This plug-in is released under the Gnu General Public Licence.
 # --- BEGIN PLUGIN CODE ---
 
 // serve assorted resources
-switch(gps('wet_rsrc')) {
+switch (gps('wet_rsrc')) {
 	case 'quickopen_js':
 		wet_quickopen_js();
 		break;
@@ -52,7 +51,9 @@ if ($app_mode != 'async') {
 	register_callback('wet_quickopen_form', 'article_ui', 'recent_articles');
 	function wet_quickopen_form($event, $step, $default)
 	{
-		return n.fInput('text', 'wet_quickopen_search', '', 'edit', '', '', INPUT_REGULAR, 0, 'wet_quickopen_search')/*.'<input size="INPUT_REGULAR" class="edit" type="text" id="wet_quickopen_search" />'*/.n.$default;
+		return n .
+		fInput('text', 'wet_quickopen_search', '', 'edit', '', '', INPUT_REGULAR, 0, 'wet_quickopen_search') . n .
+		$default;
 	}
 
 	/**
@@ -61,7 +62,7 @@ if ($app_mode != 'async') {
 	register_callback('wet_quickopen_jslink', 'article');
 	function wet_quickopen_jslink($event, $step)
 	{
-		echo '<script src="?wet_rsrc=quickopen_js" type="text/javascript"></script>'.n;
+		echo '<script src="?wet_rsrc=quickopen_js" type="text/javascript"></script>' . n;
 		require_plugin('wet_peex'); // won't help for loading wet_peex on time, but point out the lack of it to unwary users.
 	}
 
@@ -71,7 +72,7 @@ if ($app_mode != 'async') {
 	register_callback('wet_quickopen_style', 'admin_side', 'head_end');
 	function wet_quickopen_style($event, $step)
 	{
-		echo n.'<style type="text/css">div#recent{padding-top:1em;}</style>'.n;
+		echo n . '<style type="text/css">div#recent{padding-top:1em;}</style>' . n;
 	}
 }
 
@@ -80,9 +81,9 @@ if ($app_mode != 'async') {
  */
 function wet_quickopen_js()
 {
-	while(@ob_end_clean());
+	while (@ob_end_clean()) ;
 	header("Content-Type: text/javascript; charset=utf-8");
-	header("Expires: ".date("r", time() + 3600));
+	header("Expires: " . date("r", time() + 3600));
 	header("Cache-Control: public");
 	$rows = (defined('WRITE_RECENT_ARTICLES_COUNT') ? WRITE_RECENT_ARTICLES_COUNT : 10);
 	echo <<<JS
@@ -100,7 +101,7 @@ var wet_quickopen = {
 
 	// the worker function refreshes the list of matching articles and inserts the result into the "recent articles" list
 	refresh: function() {
-		var box = $('ul.recent');
+		var box = $('.recent');
 		$.ajax({
 			url: '',
 			data: {
@@ -114,10 +115,10 @@ var wet_quickopen = {
 			dataType: 'xml',
 			success: function(xml) {
 				// paint the article list
-				var list = $('<ul/>');
+				var list = $('<dummy/>');
 				// parse the XML response
 				$('article', xml).each(function(i) {
-					var li = $('<li class="recent-article"/>');
+					var li = $('<li class="recent-list-article recent-article"/>');
 					var href = '?event=article&step=edit&ID=' + $('id', this).text();
 					var title = wet_quickopen.htmlspecialchars($('title', this).text());
 					list.append(
@@ -175,5 +176,3 @@ JS;
 }
 
 # --- END PLUGIN CODE ---
-
-?>
