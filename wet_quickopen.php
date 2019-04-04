@@ -1,6 +1,6 @@
 <?php
 
-$plugin['version'] = '1.3.1';
+$plugin['version'] = '1.4.0';
 $plugin['author'] = 'Robert Wetzlmayr';
 $plugin['author_uri'] = 'http://awasteofwords.com/software/wet_quickopen-textpattern-plugin';
 $plugin['description'] = 'Open recent (and not so recent) articles quickly';
@@ -19,7 +19,7 @@ h3. Open recent (and not so recent) articles quickly
 
 h4. usage:
 
-# Textpattern 4.5+ is required.
+# Textpattern 4.7+ is required.
 # Install both @wet_quickopen@ and @wet_peex@ as a Textpattern plugin.
 # Done. If all went well, the "Content > Write":./?event=article screen will be adorned by a new input box atop of the "Recent Articles" list.
 
@@ -52,7 +52,7 @@ if ($app_mode != 'async') {
 	function wet_quickopen_form($event, $step, $default)
 	{
 		return n .
-		fInput('text', 'wet_quickopen_search', '', 'edit', '', '', INPUT_REGULAR, 0, 'wet_quickopen_search') . n .
+		fInput('text', 'wet_quickopen_search', '', 'edit txp-form-field-value', '', '', INPUT_REGULAR, 0, 'wet_quickopen_search') . n .
 		$default;
 	}
 
@@ -72,7 +72,7 @@ if ($app_mode != 'async') {
 	register_callback('wet_quickopen_style', 'admin_side', 'head_end');
 	function wet_quickopen_style($event, $step)
 	{
-		echo n . '<style type="text/css">div#recent{padding-top:1em;}</style>' . n;
+		echo n . '<style type="text/css">#wet_quickopen_search{margin-top:1em;}</style>' . n;
 	}
 }
 

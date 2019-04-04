@@ -6,7 +6,7 @@ The "Recent Articles" list is filtered by matching the current search term again
 
 h4. usage:
 
-# Textpattern 4.5+ is required.
+# Textpattern 4.7+ is required.
 # Install both @wet_quickopen@ and @wet_peex@ as a Textpattern plugin.
 # Done. If all went well, the *Content > Write* screen will be adorned by a new input box atop of the "Recent Articles" list.
 
